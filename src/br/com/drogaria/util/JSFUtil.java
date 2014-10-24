@@ -8,7 +8,7 @@ public class JSFUtil {
 	public static void adicionarMensagemSucesso(String mensagem) {
 
 		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-				"Sucesso", mensagem);
+				mensagem, "");
 		FacesContext contexto = FacesContext.getCurrentInstance();
 		contexto.addMessage(null, msg);
 
@@ -16,7 +16,7 @@ public class JSFUtil {
 	public static void adicionarMensagemError(String mensagem) {
 
 		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-				"", mensagem);
+				mensagem, "");
 		FacesContext contexto = FacesContext.getCurrentInstance();
 		contexto.addMessage(null, msg);
 

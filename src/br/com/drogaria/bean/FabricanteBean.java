@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.model.ListDataModel;
 
 import br.com.drogaria.dao.FabricanteDAO;
 import br.com.drogaria.domain.Fabricante;
@@ -16,7 +15,8 @@ import br.com.drogaria.util.JSFUtil;
 @ViewScoped
 public class FabricanteBean {
 	
-	private ListDataModel<Fabricante> itens;
+	private ArrayList<Fabricante> itens;
+	private ArrayList<Fabricante> itensFiltrados;
 	private Fabricante fabricante;
 	
 
@@ -28,20 +28,29 @@ public class FabricanteBean {
 		this.fabricante = fabricante;
 	}
 
-	public ListDataModel<Fabricante> getItens() {
+	public ArrayList<Fabricante> getItens() {
 		return itens;
 	}
 
-	public void setItens(ListDataModel<Fabricante> itens) {
+	public void setItens(ArrayList<Fabricante> itens) {
 		this.itens = itens;
 	}
+	
+	public ArrayList<Fabricante> getItensFiltrados() {
+		return itensFiltrados;
+	}
+	
+	public void setItensFiltrados(ArrayList<Fabricante> itensFiltrados) {
+		this.itensFiltrados = itensFiltrados;
+	}
+	
 	
 	@PostConstruct
 	public void preparaPequisa(){
 		try{
 		FabricanteDAO dao = new FabricanteDAO();
-		ArrayList<Fabricante> lista = dao.listar();
-		itens = new ListDataModel<Fabricante>(lista);
+		itens = dao.listar();
+		
 		}catch(SQLException ex){
 			ex.printStackTrace();
 			JSFUtil.adicionarMensagemError("Erro ao pesquisar Fabricantes." + ex.getMessage());
@@ -58,9 +67,8 @@ public class FabricanteBean {
 		try {
 			dao.inserir(fabricante);
 			
-			ArrayList<Fabricante> lista = dao.listar();
-			itens = new ListDataModel<Fabricante>(lista);
-			
+			 itens = dao.listar();
+
 			JSFUtil.adicionarMensagemSucesso("Fabricante salvo com sucesso.");
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -69,21 +77,32 @@ public class FabricanteBean {
 		
 	}
 	
-	public void prepararExcluir(){
-		fabricante = itens.getRowData();
-	}
 	
 	public void excluir(){
 		FabricanteDAO dao = new FabricanteDAO();
 		try{
 		dao.excluir(fabricante);
 		
-		ArrayList<Fabricante> lista = dao.listar();
-		itens = new ListDataModel<Fabricante>(lista);
+		itens = dao.listar();
 		JSFUtil.adicionarMensagemSucesso("Fabricante removido com sucesso.");
 		}catch(SQLException ex){
 			ex.printStackTrace();
 			JSFUtil.adicionarMensagemError("Erro ao remover o Fabricante." + ex.getMessage());
+		}
+	}
+	
+	
+	
+	public void editar(){
+		FabricanteDAO dao = new FabricanteDAO();
+		try{
+		dao.editar(fabricante);
+		itens = dao.listar();
+		
+		JSFUtil.adicionarMensagemSucesso("Fabricante editado com sucesso.");
+		}catch(SQLException ex){
+			ex.printStackTrace();
+			JSFUtil.adicionarMensagemSucesso("Erro ao editar o Fabricante." + ex.getMessage());
 		}
 	}
 
